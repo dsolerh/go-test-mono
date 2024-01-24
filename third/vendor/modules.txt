@@ -1,0 +1,3 @@
+# first v0.0.0 => ../first
+## explicit; go 1.21.6
+first
