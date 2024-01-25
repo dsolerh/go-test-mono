@@ -1,6 +1,6 @@
 package third
 
-import "first"
+import "github.com/dsolerh/go-test-mono/first"
 
 func Third() bool {
 	return first.First()
