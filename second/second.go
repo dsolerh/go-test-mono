@@ -7,5 +7,5 @@ import (
 )
 
 func Version() string {
-	return fmt.Sprintf("second: v1 %s", first.Version())
+	return fmt.Sprintf("second: v0.1.2 %s", first.Version())
 }
