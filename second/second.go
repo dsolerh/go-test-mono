@@ -1,7 +1,11 @@
 package second
 
-import "github.com/dsolerh/go-test-mono/first"
+import (
+	"fmt"
 
-func Second() bool {
-	return !first.First()
+	"github.com/dsolerh/go-test-mono/first"
+)
+
+func Version() string {
+	return fmt.Sprintf("second: v1 %s", first.Version())
 }
