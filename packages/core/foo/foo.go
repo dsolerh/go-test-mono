@@ -6,4 +6,6 @@ import (
 	"github.com/dsolerh/go-test-mono/utils"
 )
 
-func Version() string { return fmt.Sprintf("own: 0.0.12, utils: %s", utils.Version()) }
+func Version() string {
+	return fmt.Sprintf("own: 0.0.12, utils: %s, utils.sub: %s", utils.Version(), utils.SubVersion())
+}
