@@ -91,7 +91,7 @@ func main() {
 		return
 	}
 
-	cmd = exec.Command("go", "work", "use", *nameOfPackage)
+	cmd = exec.Command("go", "work", "use", "-r", ".")
 	output, err = cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("error adding package to workspace: %v, output: %s\n", err, output)
