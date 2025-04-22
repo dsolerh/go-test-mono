@@ -1,13 +1,3 @@
 go 1.24.1
 
-replace packages/core/foo => github.com/dsolerh/go-test-mono/foo v0.0.10
-
-replace packages/publisher => github.com/dsolerh/go-test-mono/publisher v0.0.13
-
-replace packages/utils => github.com/dsolerh/go-test-mono/utils v0.0.28
-
-use (
-	./packages/core/foo
-	./packages/publisher
-	./packages/utils
-)
+use ./foo
