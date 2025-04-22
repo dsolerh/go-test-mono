@@ -27,9 +27,11 @@ func main() {
 
 	pmap := publisher.MakePackagesMap(workFile)
 
-	pkgNames := make([]string, 0, len(pmap))
-	for pkey := range pmap {
-		pkgNames = append(pkgNames, pkey)
+	pkgNames := flag.Args()
+	if len(pkgNames) == 0 {
+		for pkey := range pmap {
+			pkgNames = append(pkgNames, pkey)
+		}
 	}
 
 	if err := publisher.CopyDirectories(pmap, pkgNames); err != nil {

@@ -1,3 +1,3 @@
 package foo
 
-func Version() string { return "0.0.4" }
+func Version() string { return "0.0.5" }
