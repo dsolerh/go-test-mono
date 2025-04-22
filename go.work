@@ -1,6 +1,6 @@
 go 1.24.1
 
 use (
-	./packages/core/utils/src/go
+	./packages/utils
 	./test
 )
