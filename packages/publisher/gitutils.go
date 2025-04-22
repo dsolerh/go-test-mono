@@ -29,14 +29,18 @@ func CommitAndTagChanges(pmap PackagesMap, packagesName []string, versionUpdater
 		return fmt.Errorf("error commiting the changes: %w, output: %s\n", err, output)
 	}
 
-	for _, packageName := range packagesName {
-		pmap[packageName].Version = versionUpdater(pmap[packageName].Version)
-		// tag the commit
-		tag := fmt.Sprintf("%s/%s", packageName, pmap[packageName].Version)
-		output, err = exec.Command("git", "tag", "--", tag, "HEAD").CombinedOutput()
-		if err != nil {
-			return fmt.Errorf("error tagging the changes: %w, output: %s\n", err, output)
-		}
+	// for _, packageName := range packagesName {
+	// 	pmap[packageName].Version = versionUpdater(pmap[packageName].Version)
+	// 	// tag the commit
+	// 	tag := fmt.Sprintf("%s/%s", packageName, pmap[packageName].Version)
+	// 	output, err = exec.Command("git", "tag", "--", tag, "HEAD").CombinedOutput()
+	// 	if err != nil {
+	// 		return fmt.Errorf("error tagging the changes: %w, output: %s\n", err, output)
+	// 	}
+	// }
+	output, err = exec.Command("git", "tag", "--", "v0.1.0", "HEAD").CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("error tagging the changes: %w, output: %s\n", err, output)
 	}
 
 	return nil
@@ -68,13 +72,17 @@ func PushChanges(pmap PackagesMap, packagesName []string) error {
 		return fmt.Errorf("error pushing the changes: %w, output: %s\n", err, output)
 	}
 
-	tags := make([]string, 0, len(packagesName))
-	for _, packageName := range packagesName {
-		tags = append(tags, fmt.Sprintf("%s/%s", packageName, pmap[packageName].Version))
-	}
-	baseArgs := []string{"push", "origin"}
-	fullArgs := append(baseArgs, tags...)
-	output, err = exec.Command("git", fullArgs...).CombinedOutput()
+	// tags := make([]string, 0, len(packagesName))
+	// for _, packageName := range packagesName {
+	// 	tags = append(tags, fmt.Sprintf("%s/%s", packageName, pmap[packageName].Version))
+	// }
+	// baseArgs := []string{"push", "origin"}
+	// fullArgs := append(baseArgs, tags...)
+	// output, err = exec.Command("git", fullArgs...).CombinedOutput()
+	// if err != nil {
+	// 	return fmt.Errorf("error tagging the changes: %w, output: %s\n", err, output)
+	// }
+	output, err = exec.Command("git", "push", "origin", "v0.1.0").CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("error tagging the changes: %w, output: %s\n", err, output)
 	}

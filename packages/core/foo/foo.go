@@ -7,5 +7,5 @@ import (
 )
 
 func Version() string {
-	return fmt.Sprintf("own: 0.0.12, utils: %s, utils.sub: %s", utils.Version(), utils.SubVersion())
+	return fmt.Sprintf("own: 0.1.0, utils: %s, utils.sub: %s", utils.Version(), utils.SubVersion())
 }
