@@ -1,46 +1,14 @@
 package main
 
 import (
-	"bytes"
 	"flag"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
+
+	"github.com/dsolerh/go-test-mono/packages/publisher"
 )
-
-func CopyDirectory(src, dst string) error {
-	// The -r flag makes cp recursive
-	// The -p flag preserves mode, ownership, and timestamps
-	cmd := exec.Command("cp", "-rp", src, dst)
-
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		return fmt.Errorf("error copying directory: %v, output: %s", err, output)
-	}
-
-	return nil
-}
-
-func AddPackageToWorspace(oldPackageName, packageName string) error {
-	// exec go work use <name-of-the-package>
-	cmd := exec.Command("go", "work", "use", packageName)
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		return fmt.Errorf("error adding package to workspace: %w, output: %s\n", err, output)
-	}
-	// rename package name
-	data, err := os.ReadFile(packageName + "/go.mod")
-	if err != nil {
-		return fmt.Errorf("error reading go.mod file: %w", err)
-	}
-	data = bytes.Replace(data, []byte(oldPackageName), []byte(packageName), 1)
-	err = os.WriteFile(packageName+"/go.mod", data, 0)
-	if err != nil {
-		return fmt.Errorf("error writing go.mod file: %w", err)
-	}
-	return nil
-}
 
 func CommitAndTagChanges(packageName, packageVersion string) error {
 	// add the changes
@@ -118,11 +86,11 @@ func main() {
 	packageVersion := flag.String("pv", "", "the version of the package to publish")
 	flag.Parse()
 
-	if err := CopyDirectory(*pathToPackage, *nameOfPackage); err != nil {
+	if err := publisher.CopyDirectory(*pathToPackage, *nameOfPackage); err != nil {
 		log.Fatal(err)
 	}
 
-	if err := AddPackageToWorspace(*pathToPackage, *nameOfPackage); err != nil {
+	if err := publisher.AddPackagesToWorspace(nil, []string{*nameOfPackage}); err != nil {
 		if err2 := CleanUp(*nameOfPackage); err2 != nil {
 			log.Println(err2)
 		}

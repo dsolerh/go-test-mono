@@ -1,5 +1,8 @@
-module workparser
+module github.com/dsolerh/go-test-mono/packages/publisher
 
 go 1.24.1
 
-require golang.org/x/mod v0.24.0
+require (
+	github.com/Masterminds/semver/v3 v3.3.1
+	golang.org/x/mod v0.24.0
+)
