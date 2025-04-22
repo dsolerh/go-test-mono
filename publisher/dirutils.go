@@ -1,0 +1,41 @@
+package publisher
+
+import (
+	"fmt"
+	"os"
+	"os/exec"
+)
+
+func CopyDirectory(src, dst string) error {
+	// The -r flag makes cp recursive
+	// The -p flag preserves mode, ownership, and timestamps
+	cmd := exec.Command("cp", "-rp", src, dst)
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("error copying directory: %v, output: %s", err, output)
+	}
+
+	return nil
+}
+
+func CopyDirectories(pmap PackagesMap, packages []string) error {
+	for _, pkg := range packages {
+		src := pmap[pkg].OldPath
+		dst := pmap[pkg].Name
+		if err := CopyDirectory(src, dst); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func RemoveAllPackages(packagesName []string) error {
+	for _, packageName := range packagesName {
+		// remove the package from the root
+		if err := os.RemoveAll(packageName); err != nil {
+			return fmt.Errorf("Error removing package directory: %w\n", err)
+		}
+	}
+	return nil
+}
