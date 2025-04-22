@@ -1,3 +1,3 @@
-module github.com/dsolerh/go-test-mono/p/utils
+module github.com/dsolerh/go-test-mono/packages/utils
 
 go 1.24.1
