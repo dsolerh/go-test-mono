@@ -1,5 +1,3 @@
 package utils
 
-func Version() string {
-	return "0.0.28"
-}
+func Version() string { return "0.0.28" }
