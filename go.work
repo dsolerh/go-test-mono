@@ -7,6 +7,6 @@ use (
 	./utils
 )
 
-replace packages/utils => github.com/dsolerh/go-test-mono/utils v0.0.16
+replace packages/utils => github.com/dsolerh/go-test-mono/utils 0.0.17
 
-replace packages/publisher => github.com/dsolerh/go-test-mono/publisher v0.0.1
+replace packages/publisher => github.com/dsolerh/go-test-mono/publisher 0.0.2
