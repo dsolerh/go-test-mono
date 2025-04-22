@@ -7,17 +7,17 @@ func SemverUpdater(vtype string) func(string) string {
 	case "mayor":
 		return func(s string) string {
 			v, _ := semver.NewVersion(s)
-			return v.IncMajor().String()
+			return "v" + v.IncMajor().String()
 		}
 	case "minor":
 		return func(s string) string {
 			v, _ := semver.NewVersion(s)
-			return v.IncMinor().String()
+			return "v" + v.IncMinor().String()
 		}
 	case "patch":
 		return func(s string) string {
 			v, _ := semver.NewVersion(s)
-			return v.IncPatch().String()
+			return "v" + v.IncPatch().String()
 		}
 	}
 	panic("invalid version type")
