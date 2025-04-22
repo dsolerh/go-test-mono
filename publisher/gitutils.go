@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func CommitAndTagChanges(pmap PackagesMap, packagesName []string) error {
+func CommitAndTagChanges(pmap PackagesMap, packagesName []string, versionUpdater func(string) string) error {
 	// add the changes
 	baseArgs := []string{"add", "--"}
 	fullArgs := append(baseArgs, packagesName...)
@@ -30,9 +30,9 @@ func CommitAndTagChanges(pmap PackagesMap, packagesName []string) error {
 	}
 
 	for _, packageName := range packagesName {
-		packageVersion := pmap[packageName].Version // TODO: increase the version by semantic versioning
+		pmap[packageName].Version = versionUpdater(pmap[packageName].Version)
 		// tag the commit
-		tag := fmt.Sprintf("%s/%s", packageName, packageVersion)
+		tag := fmt.Sprintf("%s/%s", packageName, pmap[packageName].Version)
 		output, err = exec.Command("git", "tag", "--", tag, "HEAD").CombinedOutput()
 		if err != nil {
 			return fmt.Errorf("error tagging the changes: %w, output: %s\n", err, output)

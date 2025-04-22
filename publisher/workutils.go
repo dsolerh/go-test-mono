@@ -43,3 +43,19 @@ func RemovePackagesFromWorspace(packagesName []string) error {
 	}
 	return nil
 }
+
+func UpdatePackagesVersions(pmap PackagesMap, packagesName []string) error {
+	updateReplaceVersion := make([]string, 0, len(packagesName))
+	for _, pkgName := range packagesName {
+		oldPath := pmap[pkgName].OldPath
+		newPath := pmap[pkgName].NewPath
+		version := pmap[pkgName].Version
+		updateReplaceVersion = append(updateReplaceVersion, fmt.Sprintf("-replace=%s=%s@%s", oldPath, newPath, version))
+	}
+	baseArgs := []string{"work", "edit"}
+	output, err := exec.Command("go", append(baseArgs, updateReplaceVersion...)...).CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("error updating packages version in workspace: %w, output: %s\n", err, output)
+	}
+	return nil
+}

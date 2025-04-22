@@ -22,7 +22,7 @@ func CopyDirectory(src, dst string) error {
 func CopyDirectories(pmap PackagesMap, packages []string) error {
 	for _, pkg := range packages {
 		src := pmap[pkg].OldPath
-		dst := pmap[pkg].Name
+		dst := pkg
 		if err := CopyDirectory(src, dst); err != nil {
 			return err
 		}
