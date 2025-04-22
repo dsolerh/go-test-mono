@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
 	"os/exec"
 )
 
@@ -84,43 +83,43 @@ func main() {
 		return
 	}
 
-	// remove the package from the root
-	err = os.RemoveAll(*nameOfPackage)
-	if err != nil {
-		fmt.Printf("Error removing package directory: %v\n", err)
-		return
-	}
+	// // remove the package from the root
+	// err = os.RemoveAll(*nameOfPackage)
+	// if err != nil {
+	// 	fmt.Printf("Error removing package directory: %v\n", err)
+	// 	return
+	// }
 
-	cmd = exec.Command("go", "work", "use", "-r", ".")
-	output, err = cmd.CombinedOutput()
-	if err != nil {
-		fmt.Printf("error adding package to workspace: %v, output: %s\n", err, output)
-		return
-	}
+	// cmd = exec.Command("go", "work", "use", "-r", ".")
+	// output, err = cmd.CombinedOutput()
+	// if err != nil {
+	// 	fmt.Printf("error adding package to workspace: %v, output: %s\n", err, output)
+	// 	return
+	// }
 
-	// add the changes
-	cmd = exec.Command("git", "add", "--", *nameOfPackage, "go.work")
-	output, err = cmd.CombinedOutput()
-	if err != nil {
-		fmt.Printf("error adding package to git: %v, output: %s\n", err, output)
-		return
-	}
+	// // add the changes
+	// cmd = exec.Command("git", "add", "--", *nameOfPackage, "go.work")
+	// output, err = cmd.CombinedOutput()
+	// if err != nil {
+	// 	fmt.Printf("error adding package to git: %v, output: %s\n", err, output)
+	// 	return
+	// }
 
-	// commit the changes
-	cmd = exec.Command("git", "commit", "-m", fmt.Sprintf(`"ci: cleanup publish of package %s"`, *nameOfPackage))
-	output, err = cmd.CombinedOutput()
-	if err != nil {
-		fmt.Printf("error commiting the changes: %v, output: %s\n", err, output)
-		return
-	}
+	// // commit the changes
+	// cmd = exec.Command("git", "commit", "-m", fmt.Sprintf(`"ci: cleanup publish of package %s"`, *nameOfPackage))
+	// output, err = cmd.CombinedOutput()
+	// if err != nil {
+	// 	fmt.Printf("error commiting the changes: %v, output: %s\n", err, output)
+	// 	return
+	// }
 
-	// push the changes
-	cmd = exec.Command("git", "push")
-	output, err = cmd.CombinedOutput()
-	if err != nil {
-		fmt.Printf("error pushing the changes: %v, output: %s\n", err, output)
-		return
-	}
+	// // push the changes
+	// cmd = exec.Command("git", "push")
+	// output, err = cmd.CombinedOutput()
+	// if err != nil {
+	// 	fmt.Printf("error pushing the changes: %v, output: %s\n", err, output)
+	// 	return
+	// }
 
 	fmt.Printf("package %s published with version %s\n", *nameOfPackage, *packageVersion)
 }
