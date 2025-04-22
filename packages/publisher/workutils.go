@@ -16,13 +16,13 @@ func AddPackagesToWorspace(pmap PackagesMap, packagesName []string) error {
 		return fmt.Errorf("error adding package to workspace: %w, output: %s\n", err, output)
 	}
 
-	dropReplaces := make([]string, 0, len(packagesName))
-	for _, pkgName := range packagesName {
-		oldPath := pmap[pkgName].OldPath
-		dropReplaces = append(dropReplaces, fmt.Sprintf("-dropreplace=%s", oldPath))
+	dropOld := make([]string, 0, 2*len(pmap))
+	for _, pkgInfo := range pmap {
+		dropOld = append(dropOld, fmt.Sprintf("-dropreplace=%s", pkgInfo.OldPath))
+		dropOld = append(dropOld, fmt.Sprintf("-dropuse=%s", pkgInfo.OldPath))
 	}
 	baseArgs = []string{"work", "edit"}
-	output, err = exec.Command("go", append(baseArgs, dropReplaces...)...).CombinedOutput()
+	output, err = exec.Command("go", append(baseArgs, dropOld...)...).CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("error removing packages from workspace: %w, output: %s\n", err, output)
 	}
@@ -42,25 +42,29 @@ func AddPackagesToWorspace(pmap PackagesMap, packagesName []string) error {
 	return nil
 }
 
-func RemovePackagesFromWorspace(packagesName []string) error {
-	dropUses := make([]string, 0, len(packagesName))
+func RemovePackagesFromWorspace(pmap PackagesMap, packagesName []string) error {
+	updateUses := make([]string, 0, len(packagesName)+len(pmap))
 	for _, pkgName := range packagesName {
-		dropUses = append(dropUses, fmt.Sprintf("-dropuse=%s", pkgName))
+		updateUses = append(updateUses, fmt.Sprintf("-dropuse=%s", pkgName))
 	}
+	for _, pkgInfo := range pmap {
+		updateUses = append(updateUses, fmt.Sprintf("-use=%s", pkgInfo.OldPath))
+	}
+
 	baseArgs := []string{"work", "edit"}
-	output, err := exec.Command("go", append(baseArgs, dropUses...)...).CombinedOutput()
+	output, err := exec.Command("go", append(baseArgs, updateUses...)...).CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("error removing packages from workspace: %w, output: %s\n", err, output)
 	}
 	return nil
 }
 
-func UpdatePackagesVersions(pmap PackagesMap, packagesName []string) error {
-	updateReplaceVersion := make([]string, 0, len(packagesName))
-	for _, pkgName := range packagesName {
-		oldPath := pmap[pkgName].OldPath
-		newPath := pmap[pkgName].NewPath
-		version := pmap[pkgName].Version
+func UpdatePackagesVersions(pmap PackagesMap) error {
+	updateReplaceVersion := make([]string, 0, len(pmap))
+	for _, pkgInfo := range pmap {
+		oldPath := pkgInfo.OldPath
+		newPath := pkgInfo.NewPath
+		version := pkgInfo.Version
 		updateReplaceVersion = append(updateReplaceVersion, fmt.Sprintf("-replace=%s=%s@%s", oldPath, newPath, version))
 	}
 	baseArgs := []string{"work", "edit"}
