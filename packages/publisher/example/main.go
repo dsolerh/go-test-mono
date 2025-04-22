@@ -69,7 +69,7 @@ func main() {
 		log.Println(err)
 	}
 
-	if err := publisher.PushChanges(); err != nil {
+	if err := publisher.PushChanges(pmap, pkgNames); err != nil {
 		log.Println(err)
 	}
 }

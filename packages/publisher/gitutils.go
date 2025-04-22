@@ -61,11 +61,22 @@ func CleanUpCommit(packagesName []string) error {
 	return nil
 }
 
-func PushChanges() error {
+func PushChanges(pmap PackagesMap, packagesName []string) error {
 	// push the changes
 	output, err := exec.Command("git", "push", "--follow-tags").CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("error pushing the changes: %w, output: %s\n", err, output)
+	}
+
+	tags := make([]string, 0, len(packagesName))
+	for _, packageName := range packagesName {
+		tags = append(tags, fmt.Sprintf("%s/%s", packageName, pmap[packageName].Version))
+	}
+	baseArgs := []string{"push", "origin"}
+	fullArgs := append(baseArgs, tags...)
+	output, err = exec.Command("git", fullArgs...).CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("error tagging the changes: %w, output: %s\n", err, output)
 	}
 	return nil
 }
