@@ -15,6 +15,17 @@ func AddPackagesToWorspace(pmap PackagesMap, packagesName []string) error {
 	if err != nil {
 		return fmt.Errorf("error adding package to workspace: %w, output: %s\n", err, output)
 	}
+
+	dropReplaces := make([]string, 0, len(packagesName))
+	for _, pkgName := range packagesName {
+		oldPath := pmap[pkgName].OldPath
+		dropReplaces = append(dropReplaces, fmt.Sprintf("-dropreplace=%s", oldPath))
+	}
+	baseArgs = []string{"work", "edit"}
+	output, err = exec.Command("go", append(baseArgs, dropReplaces...)...).CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("error removing packages from workspace: %w, output: %s\n", err, output)
+	}
 	for _, packageName := range packagesName {
 		oldPackageName := pmap[packageName].OldPath
 		// rename package name
