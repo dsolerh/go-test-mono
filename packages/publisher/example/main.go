@@ -13,7 +13,7 @@ func main() {
 	}
 
 	// Access workspace information
-	for _, use := range workFile.Use {
-		fmt.Printf("use: %#v\n", use)
+	for _, replace := range workFile.Replace {
+		fmt.Printf("replace: %#v\n", replace)
 	}
 }
