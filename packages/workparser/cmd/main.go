@@ -121,24 +121,28 @@ func main() {
 	if err := CopyDirectory(*pathToPackage, *nameOfPackage); err != nil {
 		log.Fatal(err)
 	}
-	defer func() {
-		if err := CleanUp(*nameOfPackage); err != nil {
-			log.Fatal(err)
-		}
-	}()
 
 	if err := AddPackageToWorspace(*pathToPackage, *nameOfPackage); err != nil {
+		if err2 := CleanUp(*nameOfPackage); err2 != nil {
+			log.Println(err2)
+		}
 		log.Fatal(err)
 	}
 
 	if err := CommitAndTagChanges(*nameOfPackage, *packageVersion); err != nil {
+		if err2 := CleanUp(*nameOfPackage); err2 != nil {
+			log.Println(err2)
+		}
 		log.Fatal(err)
 	}
-	defer func() {
-		if err := RevertCommit(*nameOfPackage); err != nil {
-			log.Fatal(err)
-		}
-	}()
+
+	if err := CleanUp(*nameOfPackage); err != nil {
+		log.Println(err)
+	}
+
+	if err := RevertCommit(*nameOfPackage); err != nil {
+		log.Fatal(err)
+	}
 
 	fmt.Printf("package %s published with version %s\n", *nameOfPackage, *packageVersion)
 }
