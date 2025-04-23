@@ -1,10 +1,10 @@
 go 1.24.1
 
 use (
-	./packages/core/foo
-	./packages/publisher
-	./packages/utils
+	./foo
+	./publisher
 	./tools/workpublish
+	./utils
 )
 
 replace github.com/dsolerh/go-test-mono/foo v0.0.13 => ./packages/core/foo
