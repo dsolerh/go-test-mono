@@ -32,14 +32,14 @@ func main() {
 	}
 
 	if err := workpublish.AddPackagesToWorspace(pmap, pkgNames); err != nil {
-		if err2 := workpublish.RemoveAllPackages(pkgNames); err2 != nil {
+		if err2 := workpublish.RemovePackagesFromRoot(pkgNames); err2 != nil {
 			log.Println(err2)
 		}
 		log.Fatal(err)
 	}
 
 	if err := workpublish.CommitAndTagChanges(pmap, pkgNames, vupdater); err != nil {
-		if err2 := workpublish.RemoveAllPackages(pkgNames); err2 != nil {
+		if err2 := workpublish.RemovePackagesFromRoot(pkgNames); err2 != nil {
 			log.Println(err2)
 		}
 		if err3 := workpublish.RemovePackagesFromWorspace(pmap, pkgNames); err3 != nil {
@@ -52,7 +52,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := workpublish.RemoveAllPackages(pkgNames); err != nil {
+	if err := workpublish.RemovePackagesFromRoot(pkgNames); err != nil {
 		log.Fatal(err)
 	}
 

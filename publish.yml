@@ -1,0 +1,13 @@
+repo: github.com/dsolerh/go-test-mono
+packages:
+  foo:
+    path: ./packages/core/foo
+    version: 0.0.14
+
+  utils:
+    path: ./packages/utils
+    version: 0.0.31
+
+  publisher:
+    path: ./packages/publisher
+    version: 0.0.31

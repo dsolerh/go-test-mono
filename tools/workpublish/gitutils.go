@@ -6,6 +6,20 @@ import (
 	"strings"
 )
 
+// HasUncommittedChanges checks if the git repository at the given path
+// has any uncommitted changes.
+func HasUncommittedChanges(repoPath string) (bool, error) {
+	// Run git status --porcelain
+	cmd := exec.Command("git", "status", "--porcelain")
+	output, err := cmd.Output()
+	if err != nil {
+		return false, fmt.Errorf("error running git status: %w", err)
+	}
+
+	// If the output is not empty, there are uncommitted changes
+	return len(strings.TrimSpace(string(output))) > 0, nil
+}
+
 func CommitAndTagChanges(pmap PackagesMap, packagesName []string, versionUpdater func(string) string) error {
 	// add the changes
 	baseArgs := []string{"add", "--"}

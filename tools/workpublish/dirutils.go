@@ -6,7 +6,7 @@ import (
 	"os/exec"
 )
 
-func CopyDirectory(src, dst string) error {
+func copyDirectory(src, dst string) error {
 	// The -r flag makes cp recursive
 	// The -p flag preserves mode, ownership, and timestamps
 	cmd := exec.Command("cp", "-rp", src, dst)
@@ -23,14 +23,25 @@ func CopyDirectories(pmap PackagesMap, packages []string) error {
 	for _, pkg := range packages {
 		src := pmap[pkg].CurrentPath
 		dst := pkg
-		if err := CopyDirectory(src, dst); err != nil {
+		if err := copyDirectory(src, dst); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func RemoveAllPackages(packagesName []string) error {
+func CopyPackagesToRoot(c *PublishConfig, packages []string) error {
+	for _, pkg := range packages {
+		src := c.Packages[pkg].Path
+		dst := pkg
+		if err := copyDirectory(src, dst); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func RemovePackagesFromRoot(packagesName []string) error {
 	for _, packageName := range packagesName {
 		// remove the package from the root
 		if err := os.RemoveAll(packageName); err != nil {

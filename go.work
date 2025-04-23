@@ -7,17 +7,8 @@ use (
 	./tools/workpublish
 )
 
-replace (
-	github.com/dsolerh/go-test-mono/foo v0.0.13 => ./packages/core/foo
-	github.com/dsolerh/go-test-mono/foo v0.0.14 => ./packages/core/foo
-)
+replace github.com/dsolerh/go-test-mono/foo => ./packages/core/foo
 
-replace (
-	github.com/dsolerh/go-test-mono/publisher v0.0.13 => ./packages/publisher
-	github.com/dsolerh/go-test-mono/publisher v0.0.14 => ./packages/publisher
-)
+replace github.com/dsolerh/go-test-mono/publisher => ./packages/publisher
 
-replace (
-	github.com/dsolerh/go-test-mono/utils v0.0.30 => ./packages/utils
-	github.com/dsolerh/go-test-mono/utils v0.0.31 => ./packages/utils
-)
+replace github.com/dsolerh/go-test-mono/utils => ./packages/utils
