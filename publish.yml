@@ -1,17 +1,15 @@
 repo: github.com/dsolerh/go-test-mono
 root: .
 packages:
-  foo:
-    work_name: packages/core/foo
-    pkg_name: foo
-    version: v0.0.14
-
-  publisher:
-    work_name: packages/publisher
-    pkg_name: publisher
-    version: v0.0.14
-
-  utils:
-    work_name: packages/utils
-    pkg_name: utils
-    version: v0.0.31
+    foo:
+        work_name: packages/core/foo
+        pkg_name: foo
+        version: v0.0.15
+    publisher:
+        work_name: packages/publisher
+        pkg_name: publisher
+        version: v0.0.15
+    utils:
+        work_name: packages/utils
+        pkg_name: utils
+        version: v0.0.32
