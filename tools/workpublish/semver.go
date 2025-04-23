@@ -1,4 +1,4 @@
-package publisher
+package main
 
 import "github.com/Masterminds/semver/v3"
 

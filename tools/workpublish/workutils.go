@@ -1,4 +1,4 @@
-package publisher
+package main
 
 import (
 	"bytes"
@@ -18,8 +18,8 @@ func AddPackagesToWorspace(pmap PackagesMap, packagesName []string) error {
 
 	dropOld := make([]string, 0, 2*len(pmap))
 	for _, pkgInfo := range pmap {
-		dropOld = append(dropOld, fmt.Sprintf("-dropreplace=%s", pkgInfo.OldPath))
-		dropOld = append(dropOld, fmt.Sprintf("-dropuse=%s", pkgInfo.OldPath))
+		dropOld = append(dropOld, fmt.Sprintf("-dropreplace=%s", pkgInfo.CurrentPath))
+		dropOld = append(dropOld, fmt.Sprintf("-dropuse=%s", pkgInfo.CurrentPath))
 	}
 	baseArgs = []string{"work", "edit"}
 	output, err = exec.Command("go", append(baseArgs, dropOld...)...).CombinedOutput()
@@ -27,7 +27,7 @@ func AddPackagesToWorspace(pmap PackagesMap, packagesName []string) error {
 		return fmt.Errorf("error removing packages from workspace: %w, output: %s\n", err, output)
 	}
 	for _, packageName := range packagesName {
-		oldPackageName := pmap[packageName].OldPath
+		oldPackageName := pmap[packageName].CurrentPath
 		// rename package name
 		data, err := os.ReadFile(packageName + "/go.mod")
 		if err != nil {
@@ -48,7 +48,7 @@ func RemovePackagesFromWorspace(pmap PackagesMap, packagesName []string) error {
 		updateUses = append(updateUses, fmt.Sprintf("-dropuse=%s", pkgName))
 	}
 	for _, pkgInfo := range pmap {
-		updateUses = append(updateUses, fmt.Sprintf("-use=%s", pkgInfo.OldPath))
+		updateUses = append(updateUses, fmt.Sprintf("-use=%s", pkgInfo.CurrentPath))
 	}
 
 	baseArgs := []string{"work", "edit"}
@@ -62,8 +62,8 @@ func RemovePackagesFromWorspace(pmap PackagesMap, packagesName []string) error {
 func UpdatePackagesVersions(pmap PackagesMap) error {
 	updateReplaceVersion := make([]string, 0, len(pmap))
 	for _, pkgInfo := range pmap {
-		oldPath := pkgInfo.OldPath
-		newPath := pkgInfo.NewPath
+		oldPath := pkgInfo.CurrentPath
+		newPath := pkgInfo.PublishPath
 		version := pkgInfo.Version
 		updateReplaceVersion = append(updateReplaceVersion, fmt.Sprintf("-replace=%s=%s@%s", oldPath, newPath, version))
 	}

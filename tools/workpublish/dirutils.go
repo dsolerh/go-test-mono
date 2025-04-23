@@ -1,4 +1,4 @@
-package publisher
+package main
 
 import (
 	"fmt"
@@ -21,7 +21,7 @@ func CopyDirectory(src, dst string) error {
 
 func CopyDirectories(pmap PackagesMap, packages []string) error {
 	for _, pkg := range packages {
-		src := pmap[pkg].OldPath
+		src := pmap[pkg].CurrentPath
 		dst := pkg
 		if err := CopyDirectory(src, dst); err != nil {
 			return err

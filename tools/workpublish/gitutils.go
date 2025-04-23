@@ -1,4 +1,4 @@
-package publisher
+package main
 
 import (
 	"fmt"
@@ -63,7 +63,7 @@ func CleanUpCommit(packagesName []string) error {
 
 func PushChanges(pmap PackagesMap, packagesName []string) error {
 	// push the changes
-	output, err := exec.Command("git", "push", "--follow-tags").CombinedOutput()
+	output, err := exec.Command("git", "push").CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("error pushing the changes: %w, output: %s\n", err, output)
 	}

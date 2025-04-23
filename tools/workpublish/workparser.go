@@ -1,4 +1,4 @@
-package publisher
+package main
 
 import (
 	"os"
@@ -18,9 +18,9 @@ func ParseGoWorkFile(path string) (*modfile.WorkFile, error) {
 }
 
 type PackageInfo struct {
-	OldPath string // the path the package has in the current project structure
-	NewPath string // the package name and new path
-	Version string // the package current version
+	CurrentPath string // the path the package has in the current project structure
+	PublishPath string // the package name and new path
+	Version     string // the package current version
 }
 
 type PackagesMap map[string]*PackageInfo
@@ -28,12 +28,12 @@ type PackagesMap map[string]*PackageInfo
 func MakePackagesMap(work *modfile.WorkFile) PackagesMap {
 	pmap := make(PackagesMap, len(work.Replace))
 	for _, replace := range work.Replace {
-		parts := strings.Split(replace.New.Path, "/")
+		parts := strings.Split(replace.Old.Path, "/")
 		pkey := parts[len(parts)-1]
 		pmap[pkey] = &PackageInfo{
-			OldPath: replace.Old.Path,
-			NewPath: replace.New.Path,
-			Version: replace.New.Version,
+			CurrentPath: replace.New.Path,
+			PublishPath: replace.Old.Path,
+			Version:     replace.Old.Version,
 		}
 	}
 	return pmap
