@@ -8,63 +8,123 @@ import (
 
 // Example usage
 func main() {
+	// check if there're uncommitted changes in the repo
+	uncomm, err := workpublish.HasUncommittedChanges()
+	if err != nil {
+		log.Fatal(err)
+	}
+	if uncomm {
+		log.Fatal("uncommitted changes in the repo")
+	}
+
 	v := flag.String("v", "patch", "the update to the package version (mayor|minor|patch)")
+	fname := flag.String("f", "publish.yml", "the config file for the update")
 	flag.Parse()
 
 	var vupdater = workpublish.SemverUpdater(*v)
 
-	workFile, err := workpublish.ParseGoWorkFile("go.work")
+	config, err := workpublish.LoadPublishConfig(*fname)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-
-	pmap := workpublish.MakePackagesMap(workFile)
 
 	pkgNames := flag.Args()
 	if len(pkgNames) == 0 {
-		for pkey := range pmap {
-			pkgNames = append(pkgNames, pkey)
-		}
+		pkgNames = config.AllPackageNames()
 	}
 
-	if err := workpublish.CopyDirectories(pmap, pkgNames); err != nil {
+	log.Printf("publishing packages: %v\n", pkgNames)
+	log.Println("copiying packages to root...")
+	// copy the packages to the root of the workspace
+	if err := workpublish.CopyPackagesToRoot(config, pkgNames); err != nil {
 		log.Fatal(err)
 	}
 
-	if err := workpublish.AddPackagesToWorspace(pmap, pkgNames); err != nil {
+	log.Println("updating workspace packages...")
+	// remove the old packages from the go.work and add the new
+	oldPackages := config.GetOldPackages()
+	if err := workpublish.UpdateWorkspacePackages(pkgNames, oldPackages); err != nil {
+		log.Println("removing packages from root...")
+		// remove the packages from root (cleanup)
 		if err2 := workpublish.RemovePackagesFromRoot(pkgNames); err2 != nil {
 			log.Println(err2)
 		}
 		log.Fatal(err)
 	}
 
-	if err := workpublish.CommitAndTagChanges(pmap, pkgNames, vupdater); err != nil {
+	// update the go.mod files of the new packages
+	if err := workpublish.UpdatePackageMods(config, pkgNames); err != nil {
+		log.Println("removing packages from root...")
+		// remove the packages from root (cleanup)
 		if err2 := workpublish.RemovePackagesFromRoot(pkgNames); err2 != nil {
 			log.Println(err2)
 		}
-		if err3 := workpublish.RemovePackagesFromWorspace(pmap, pkgNames); err3 != nil {
+		log.Println("reverting workspace packages...")
+		// revert the workspace packages
+		if err3 := workpublish.UpdateWorkspacePackages(oldPackages, pkgNames); err3 != nil {
 			log.Println(err3)
 		}
 		log.Fatal(err)
 	}
 
-	if err := workpublish.UpdatePackagesVersions(pmap); err != nil {
+	// commit all changes
+	if err := workpublish.CommitChanges(workpublish.GetPublishCommitMessage(pkgNames)); err != nil {
+		log.Println("removing packages from root...")
+		// remove the packages from root (cleanup)
+		if err2 := workpublish.RemovePackagesFromRoot(pkgNames); err2 != nil {
+			log.Println(err2)
+		}
+		log.Println("reverting workspace packages...")
+		// revert the workspace packages
+		if err3 := workpublish.UpdateWorkspacePackages(oldPackages, pkgNames); err3 != nil {
+			log.Println(err3)
+		}
 		log.Fatal(err)
 	}
 
+	// update versions
+	config.UpdatePackagesVersion(pkgNames, vupdater)
+	tagVersions := config.GetTagVersions(pkgNames)
+	// tag the versions
+	if err := workpublish.TagPackagesVersion(tagVersions); err != nil {
+		log.Println("removing packages from root...")
+		// remove the packages from root (cleanup)
+		if err2 := workpublish.RemovePackagesFromRoot(pkgNames); err2 != nil {
+			log.Println(err2)
+		}
+		log.Println("reverting workspace packages...")
+		// revert the workspace packages
+		if err3 := workpublish.UpdateWorkspacePackages(oldPackages, pkgNames); err3 != nil {
+			log.Println(err3)
+		}
+		// TODO: remove commits
+		log.Fatal(err)
+	}
+
+	log.Println("removing packages from root...")
 	if err := workpublish.RemovePackagesFromRoot(pkgNames); err != nil {
+		log.Println("reverting workspace packages...")
+		// revert the workspace packages
+		if err3 := workpublish.UpdateWorkspacePackages(oldPackages, pkgNames); err3 != nil {
+			log.Println(err3)
+		}
 		log.Fatal(err)
 	}
 
-	if err := workpublish.RemovePackagesFromWorspace(pmap, pkgNames); err != nil {
-		log.Println(err)
+	log.Println("reverting workspace packages...")
+	// revert the workspace packages
+	if err := workpublish.UpdateWorkspacePackages(oldPackages, pkgNames); err != nil {
+		log.Fatal(err)
 	}
 
-	if err := workpublish.CleanUpCommit(pkgNames); err != nil {
-		log.Println(err)
+	log.Println("committing reverted changes...")
+	if err := workpublish.CommitChanges(workpublish.CleanupCommit); err != nil {
+		log.Fatal(err)
 	}
 
-	// if err := workpublish.PushChanges(pmap, pkgNames); err != nil {
-	// 	log.Println(err)
-	// }
+	log.Println("pushing changes...")
+	if err := workpublish.PushChanges(tagVersions); err != nil {
+		log.Fatal(err)
+	}
+	log.Println("publish completed...")
 }

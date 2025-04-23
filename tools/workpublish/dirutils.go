@@ -19,17 +19,6 @@ func copyDirectory(src, dst string) error {
 	return nil
 }
 
-func CopyDirectories(pmap PackagesMap, packages []string) error {
-	for _, pkg := range packages {
-		src := pmap[pkg].CurrentPath
-		dst := pkg
-		if err := copyDirectory(src, dst); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func CopyPackagesToRoot(c *PublishConfig, packages []string) error {
 	for _, pkg := range packages {
 		src := c.Packages[pkg].Path

@@ -1,6 +1,7 @@
 package workpublish
 
 import (
+	"fmt"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -42,10 +43,27 @@ func (c *PublishConfig) AllPackageNames() []string {
 	return packageNames
 }
 
-func (c *PublishConfig) UpdatePackagesVersion(updater func(string) string) {
-	for _, pkg := range c.Packages {
+func (c *PublishConfig) UpdatePackagesVersion(packages []string, updater func(string) string) {
+	for _, pkgName := range packages {
+		pkg := c.Packages[pkgName]
 		pkg.Version = updater(pkg.Version)
 	}
+}
+
+func (c *PublishConfig) GetTagVersions(packages []string) []string {
+	tags := make([]string, 0, len(packages))
+	for _, pkgName := range packages {
+		tags = append(tags, fmt.Sprintf("%s/%s", pkgName, c.Packages[pkgName].Version))
+	}
+	return tags
+}
+
+func (c *PublishConfig) GetOldPackages() []string {
+	packages := make([]string, 0, len(c.Packages))
+	for _, pkg := range c.Packages {
+		packages = append(packages, pkg.Path)
+	}
+	return packages
 }
 
 func (c *PublishConfig) SaveConfig() error {
