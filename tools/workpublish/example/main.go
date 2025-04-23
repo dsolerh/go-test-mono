@@ -2,14 +2,17 @@ package main
 
 import (
 	"fmt"
-	"workpublish"
+	"os/exec"
 )
 
 func main() {
-	c, err := workpublish.LoadPublishConfig("publish.yml")
-	fmt.Printf("err: %v\n", err)
-	fmt.Printf("c: %#v\n", c)
-
-	err = workpublish.UpdateWorkspacePackages()
+	output, err := exec.Command(
+		"go",
+		"work",
+		"edit",
+		"-use=./packages/core/foo",
+		"-use=./tools/workpublish",
+	).CombinedOutput()
+	fmt.Printf("output: %s\n", output)
 	fmt.Printf("err: %v\n", err)
 }

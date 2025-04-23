@@ -60,6 +60,14 @@ func (c *PublishConfig) GetTagVersions(packages []string) []string {
 	return tags
 }
 
+func (c *PublishConfig) GetOldPackages() []string {
+	packages := make([]string, 0, len(c.Packages))
+	for _, pkg := range c.Packages {
+		packages = append(packages, pkg.WorkName)
+	}
+	return packages
+}
+
 func (c *PublishConfig) SaveConfig() error {
 	f, err := os.Create(c.configPath)
 	if err != nil {

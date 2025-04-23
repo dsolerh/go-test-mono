@@ -7,13 +7,23 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"strings"
+
+	"github.com/samber/lo"
 )
 
-func UpdateWorkspacePackages() error {
-	output, err := exec.Command("go", "work", "use", "-r", ".").CombinedOutput()
+func UpdateWorkspacePackages(newPackages, oldPackages []string) error {
+	useNew := lo.Map(newPackages, func(p string, _ int) string { return fmt.Sprintf("-use=%s", p) })
+	dropOld := lo.Map(oldPackages, func(p string, _ int) string { return fmt.Sprintf("-dropuse=%s", p) })
+	baseArgs := []string{"work", "edit"}
+	fullArgs := append(baseArgs, dropOld...)
+	fullArgs = append(fullArgs, useNew...)
+	log.Printf("running: 'go %s'", strings.Join(fullArgs, " "))
+	output, err := exec.Command("go", fullArgs...).CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("error removing packages from workspace: %w, output: %s\n", err, output)
 	}
+	log.Printf("output: '%s'", output)
 	return nil
 }
 

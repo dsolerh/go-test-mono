@@ -37,6 +37,7 @@ func main() {
 	// update versions
 	config.UpdatePackagesVersion(pkgNames, vupdater)
 	tagVersions := config.GetTagVersions(pkgNames)
+	oldPackages := config.GetOldPackages()
 
 	log.Printf("publishing packages: %v\n", tagVersions)
 	log.Println("copiying packages to root...")
@@ -47,7 +48,7 @@ func main() {
 
 	log.Println("updating workspace packages...")
 	// remove the old packages from the go.work and add the new
-	if err := workpublish.UpdateWorkspacePackages(); err != nil {
+	if err := workpublish.UpdateWorkspacePackages(pkgNames, oldPackages); err != nil {
 		log.Println("removing packages from root...")
 		// remove the packages from root (cleanup)
 		if err2 := workpublish.RemovePackagesFromRoot(pkgNames); err2 != nil {
@@ -65,7 +66,7 @@ func main() {
 		}
 		log.Println("reverting workspace packages...")
 		// revert the workspace packages
-		if err3 := workpublish.UpdateWorkspacePackages(); err3 != nil {
+		if err3 := workpublish.UpdateWorkspacePackages(oldPackages, pkgNames); err3 != nil {
 			log.Println(err3)
 		}
 		log.Fatal(err)
@@ -80,7 +81,7 @@ func main() {
 		}
 		log.Println("reverting workspace packages...")
 		// revert the workspace packages
-		if err3 := workpublish.UpdateWorkspacePackages(); err3 != nil {
+		if err3 := workpublish.UpdateWorkspacePackages(oldPackages, pkgNames); err3 != nil {
 			log.Println(err3)
 		}
 		log.Fatal(err)
@@ -95,7 +96,7 @@ func main() {
 		}
 		log.Println("reverting workspace packages...")
 		// revert the workspace packages
-		if err3 := workpublish.UpdateWorkspacePackages(); err3 != nil {
+		if err3 := workpublish.UpdateWorkspacePackages(oldPackages, pkgNames); err3 != nil {
 			log.Println(err3)
 		}
 		// TODO: remove commits
@@ -106,7 +107,7 @@ func main() {
 	if err := workpublish.RemovePackagesFromRoot(pkgNames); err != nil {
 		log.Println("reverting workspace packages...")
 		// revert the workspace packages
-		if err3 := workpublish.UpdateWorkspacePackages(); err3 != nil {
+		if err3 := workpublish.UpdateWorkspacePackages(oldPackages, pkgNames); err3 != nil {
 			log.Println(err3)
 		}
 		log.Fatal(err)
@@ -114,7 +115,7 @@ func main() {
 
 	log.Println("reverting workspace packages...")
 	// revert the workspace packages
-	if err := workpublish.UpdateWorkspacePackages(); err != nil {
+	if err := workpublish.UpdateWorkspacePackages(oldPackages, pkgNames); err != nil {
 		log.Fatal(err)
 	}
 
