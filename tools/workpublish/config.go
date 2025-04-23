@@ -10,12 +10,14 @@ import (
 type PublishConfig struct {
 	configPath string
 	Repo       string                  `yaml:"repo"`
-	Packages   map[string]PackagePInfo `yaml:"packages"`
+	Root       string                  `yaml:"root"`
+	Packages   map[string]*PackageInfo `yaml:"packages"`
 }
 
-type PackagePInfo struct {
-	Path    string `yaml:"path"`
-	Version string `yaml:"version"`
+type PackageInfo struct {
+	WorkName string `yaml:"work_name"`
+	PkgName  string `yaml:"pkg_name"`
+	Version  string `yaml:"version"`
 }
 
 func LoadPublishConfig(fname string) (*PublishConfig, error) {
@@ -56,14 +58,6 @@ func (c *PublishConfig) GetTagVersions(packages []string) []string {
 		tags = append(tags, fmt.Sprintf("%s/%s", pkgName, c.Packages[pkgName].Version))
 	}
 	return tags
-}
-
-func (c *PublishConfig) GetOldPackages() []string {
-	packages := make([]string, 0, len(c.Packages))
-	for _, pkg := range c.Packages {
-		packages = append(packages, pkg.Path)
-	}
-	return packages
 }
 
 func (c *PublishConfig) SaveConfig() error {

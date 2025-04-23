@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path"
 )
 
 func copyDirectory(src, dst string) error {
@@ -21,9 +22,9 @@ func copyDirectory(src, dst string) error {
 
 func CopyPackagesToRoot(c *PublishConfig, packages []string) error {
 	for _, pkg := range packages {
-		src := c.Packages[pkg].Path
-		dst := pkg
-		if err := copyDirectory(src, dst); err != nil {
+		workPath := path.Join(c.Root, c.Packages[pkg].WorkName)
+		pkgPath := path.Join(c.Root, c.Packages[pkg].PkgName)
+		if err := copyDirectory(workPath, pkgPath); err != nil {
 			return err
 		}
 	}
