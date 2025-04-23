@@ -65,7 +65,7 @@ func UpdatePackagesVersions(pmap PackagesMap) error {
 		oldPath := pkgInfo.CurrentPath
 		newPath := pkgInfo.PublishPath
 		version := pkgInfo.Version
-		updateReplaceVersion = append(updateReplaceVersion, fmt.Sprintf("-replace=%s=%s@%s", oldPath, newPath, version))
+		updateReplaceVersion = append(updateReplaceVersion, fmt.Sprintf("-replace=%s@%s=%s", newPath, version, oldPath))
 	}
 	baseArgs := []string{"work", "edit"}
 	output, err := exec.Command("go", append(baseArgs, updateReplaceVersion...)...).CombinedOutput()

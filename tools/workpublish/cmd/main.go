@@ -64,7 +64,7 @@ func main() {
 		log.Println(err)
 	}
 
-	if err := workpublish.PushChanges(pmap, pkgNames); err != nil {
-		log.Println(err)
-	}
+	// if err := workpublish.PushChanges(pmap, pkgNames); err != nil {
+	// 	log.Println(err)
+	// }
 }
