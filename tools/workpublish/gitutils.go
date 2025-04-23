@@ -34,13 +34,11 @@ func CommitChanges(message string) error {
 }
 
 func GetPublishCommitMessage(packages []string) string {
-	var plural = func() string {
-		if len(packages) > 1 {
-			return "s"
-		}
-		return ""
+	var plural = "package"
+	if len(packages) > 1 {
+		plural = "packages"
 	}
-	return fmt.Sprintf(`"ci: publish package%s %s"`, plural(), strings.Join(packages, ","))
+	return fmt.Sprintf("ci: publish %s\n +%s", plural, strings.Join(packages, "\n +"))
 }
 
 func TagPackagesVersion(tags []string) error {
@@ -54,7 +52,7 @@ func TagPackagesVersion(tags []string) error {
 	return nil
 }
 
-const CleanupCommit = `"ci: cleanup publish"`
+const CleanupCommit = "ci: cleanup publish"
 
 func PushChanges(tags []string) error {
 	// push the changes
