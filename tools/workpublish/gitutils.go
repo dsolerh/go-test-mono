@@ -33,12 +33,12 @@ func CommitChanges(message string) error {
 	return nil
 }
 
-func GetPublishCommitMessage(packages []string) string {
+func GetPublishCommitMessage(pkgtags []string) string {
 	var plural = "package"
-	if len(packages) > 1 {
+	if len(pkgtags) > 1 {
 		plural = "packages"
 	}
-	return fmt.Sprintf("ci: publish %s\n +%s", plural, strings.Join(packages, "\n +"))
+	return fmt.Sprintf("ci: publish %s\n +%s", plural, strings.Join(pkgtags, "\n +"))
 }
 
 func TagPackagesVersion(tags []string) error {

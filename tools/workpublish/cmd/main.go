@@ -73,7 +73,7 @@ func main() {
 	}
 
 	// commit all changes
-	if err := workpublish.CommitChanges(workpublish.GetPublishCommitMessage(pkgNames)); err != nil {
+	if err := workpublish.CommitChanges(workpublish.GetPublishCommitMessage(tagVersions)); err != nil {
 		log.Println("removing packages from root...")
 		// remove the packages from root (cleanup)
 		if err2 := workpublish.RemovePackagesFromRoot(pkgNames); err2 != nil {
