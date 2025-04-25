@@ -12,4 +12,4 @@ packages:
     utils:
         work_name: packages/utils
         pkg_name: utils
-        version: v0.1.4
+        version: v0.1.5
