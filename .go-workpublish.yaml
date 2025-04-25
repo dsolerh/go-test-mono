@@ -4,12 +4,12 @@ packages:
     foo:
         work_name: packages/core/foo
         pkg_name: foo
-        version: v0.1.3
+        version: v0.1.4
     publisher:
         work_name: packages/publisher
         pkg_name: publisher
-        version: v0.1.3
+        version: v0.1.4
     utils:
         work_name: packages/utils
         pkg_name: utils
-        version: v0.1.3
+        version: v0.1.4
