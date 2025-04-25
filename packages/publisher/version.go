@@ -1,3 +1,3 @@
 package publisher
 
-func Version() string { return "0.0.14" }
+func Version() string { return "0.1.4" }
